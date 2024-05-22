@@ -3,7 +3,7 @@
 
 const myHeaders = new Headers();
 myHeaders.append("Authorization", "Basic c2FhbTpHcm90b3BvQDM1NyE=");
-
+//******* Helper function used to fetch Data from the API */
 const getData = async (hostname, triggeredAt) => {
     const requestOptions = {
         method: "GET",
@@ -25,9 +25,16 @@ const getData = async (hostname, triggeredAt) => {
 }
 
 
+// Function to fetch array of objects from API
+const fetchData = async (hostname, triggeredAt, transactionId) => {
+    const response = await getData(hostname, triggeredAt, transactionId)
+    return response
+}
+
+//*** Function used to construct a dynamic URL for API execution as the date needs to change everyday */
 const constructUrl = (hostname, triggeredAt) => {
     return `https://${hostname}/integration/transactions?filter={"where": {"triggeredAt": {"gt": "${triggeredAt}"}}}`;
 }
 
 
-module.exports = { getData, constructUrl, getData }
+module.exports = { getData, constructUrl, getData, fetchData }

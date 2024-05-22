@@ -1,36 +1,17 @@
-const { getRepeatedTransactions, fetchData } = require('./RepeatedTransactions.js');
+const { getRepeatedTransactions, getRepeatedTransactionsForCapGFlows } = require('./RepeatedTransactions.js');
 const { getFailedTransactions, getProcessingTransactions } = require('./FailedTransactions.js');
+const { fetchData } = require('./Helper.js');
+const { getPartialFailures } = require("./PartialFailures.js")
 const fs = require('fs');
 const path = require('path');
+const system = require('./ArrayOfObjects.js');
 
-const system = [{
-    hostname: "stmicro-avatar.camelot-itlab.com",
-    triggeredAt: "2024-05-21T13:00:00.000Z",
-    instance: "PROD"
-},
-{
-    hostname: "dev.stmicro-avatar.camelot-itlab.com",
-    triggeredAt: "2024-05-21T13:40:00.000Z",
-    instance: "DEV"
-},
-{
-    hostname: "test.stmicro-avatar.camelot-itlab.com",
-    triggeredAt: "2024-05-21T13:00:00.000Z",
-    instance: "TEST"
-},
-{
-    hostname: "pre-prod.stmicro-avatar.camelot-itlab.com",
-    triggeredAt: "2024-05-21T13:00:00.000Z",
-    instance: "PRE-PROD"
-}]
-
-const constructStatement = (TransactionCount, getRepeatedTransactions, FailedTransactions, instance, PendingTransactions) => {
+const constructStatement = (TransactionCount, TotalRepeatedTransactions, FailedTransactions, instance, PendingTransactions) => {
     return `For ${instance}
     Transaction Count: ${TransactionCount},
     Failed Transactions: ${FailedTransactions || 'None'},
-    Pending Transactions : ${PendingTransactions.join(', ') || 'None'},
-    Repeated Transaction IDs: ${getRepeatedTransactions.join(', ') || 'None'},
-    `;
+    Pending Transactions: ${PendingTransactions || 'None'},
+    Repeated TransactionsIDs: ${TotalRepeatedTransactions || 'None'}`;
 };
 
 // \\hostname: "stmicro-avatar.camelot-itlab.com",
@@ -39,6 +20,8 @@ const constructStatement = (TransactionCount, getRepeatedTransactions, FailedTra
 // instance: "PROD"
 
 
+
+//Get Daily Monitoring status
 const GetDailyStatus = async () => {
     let reports = [];
     for (const elem of system) {
@@ -46,21 +29,33 @@ const GetDailyStatus = async () => {
             const Transactions = await fetchData(elem.hostname, elem.triggeredAt);
             const TransactionCount = Transactions.length;
             const instance = elem.instance;
-            const RepeatedTransactions = await getRepeatedTransactions(Transactions);
+            const RepeatedTransactionsForNormalFlows = await getRepeatedTransactions(Transactions);
+            const RepeatedTransactionsForCapGFlows = await getRepeatedTransactionsForCapGFlows(Transactions)
+            const TotalTransactions = RepeatedTransactionsForNormalFlows.concat(RepeatedTransactionsForCapGFlows)
             const FailedTransactions = await getFailedTransactions(Transactions);
             const PendingTransactions = await getProcessingTransactions(Transactions);
+            const PartialFailures = await getPartialFailures(Transactions)
 
-            const status = constructStatement(TransactionCount, RepeatedTransactions, FailedTransactions, instance, PendingTransactions);
+            function formatRepeatedTransactionsArray(TotalTransactions) {
+                return TotalTransactions.map(innerArray => innerArray.join('\n'))
+                    .join('\n\n');
+            }
+            const TotalRepeatedTransactions = formatRepeatedTransactionsArray(TotalTransactions);
+
+
+            const status = constructStatement(TransactionCount, TotalRepeatedTransactions, FailedTransactions, instance, PendingTransactions);
             reports.push(status);
+
 
         } catch (error) {
             console.error('Error:', error);
         }
     }
 
+
     const fullReport = reports.join('\n\n');
 
-
+    //Report saved to file.
     const now = new Date();
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
@@ -77,16 +72,16 @@ const GetDailyStatus = async () => {
         fs.mkdirSync(folderPath);
     }
 
-
-    // Create the file name
-
     fs.writeFile(filePath, fullReport, (err) => {
         if (err) {
             console.error('Error writing to file', err);
         } else {
-            console.log('Report saved to the file');
+            console.log('Daily Monitoring Report saved to the file');
         }
     });
+
+
+
 }
 
 GetDailyStatus();

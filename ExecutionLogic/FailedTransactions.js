@@ -1,7 +1,7 @@
 const myHeaders = new Headers();
 myHeaders.append("Authorization", "Basic c2FhbTpHcm90b3BvQDM1NyE=");
 
-
+//*********** Function that returns all the failed transactions in the daily chain along with their reason */
 async function getFailedTransactions(Transactions) {
     const FailTransactions = [];
     for (const transaction of Transactions) {
@@ -15,6 +15,8 @@ async function getFailedTransactions(Transactions) {
     return FailedTransactions
 }
 
+
+//*********** Function that returns all the transactions stuck in processing in the daily chain */
 async function getProcessingTransactions(Transactions) {
     const PendingTransactions = [];
     for (const transaction of Transactions) {
@@ -27,6 +29,12 @@ async function getProcessingTransactions(Transactions) {
     return PendingTransactions
 }
 
+
+//*********** Function to convert the array of object recieved to an array of string */
+//*********** This function is created to convert the object that we construct in the getFailureTransactions function
+//*********** which returns an object that has the Failed Transaction along with its message * /
+//*********** used in getFailedTransactions */
+
 const convertObjectToStringArray = (Transactions) => {
     return Transactions.map(obj => {
         const key = Object.keys(obj)[0];
@@ -34,7 +42,6 @@ const convertObjectToStringArray = (Transactions) => {
         return `${key}: ${value}`;
     });
 };
-
 
 
 module.exports = { getFailedTransactions, getProcessingTransactions }
