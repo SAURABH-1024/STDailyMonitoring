@@ -1,0 +1,24 @@
+For PROD
+    Transaction Count: 44,
+    Failed Transactions: ,
+    Pending Transactions : None,
+    Repeated Transaction IDs: SCA_PRD_SCA2IBP_ORDERRELATIONSHIP-20240522004216,SCA_PRD_SCA2IBP_ORDERRELATIONSHIP-20240521223141,
+    
+For DEV
+    Transaction Count: 42,
+    Failed Transactions: ,
+    Pending Transactions : None,
+    Repeated Transaction IDs: SCA_STDDMRPT_IBP2SCA_PSI-20240521171738,SCA_STDDMRPT_IBP2SCA_PSI-20240521171155, SCA_STDDMRPT_IBP2SCA_LOC-20240521164938,SCA_STDDMRPT_IBP2SCA_LOC-20240521162915, SCA_STDDMRPT_IBP2SCA_PROD-20240521164940,SCA_STDDMRPT_IBP2SCA_PROD-20240521162923,
+    
+For TEST
+    Transaction Count: 47,
+    Failed Transactions: ,
+    Pending Transactions : None,
+    Repeated Transaction IDs: SCA_TST_IBP2SCA_LOCPROD-20240521144703,SCA_TST_IBP2SCA_LOCPROD-20240521144037,
+    
+For PRE-PROD
+    Transaction Count: 41,
+    Failed Transactions: ,
+    Pending Transactions : None,
+    Repeated Transaction IDs: None,
+    
