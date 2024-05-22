@@ -198,17 +198,16 @@ const getPartialFailures = (Transactions) => {
 
     const filenamePartialFailures = `Partial_Failures_${month}_${day}.txt`;
 
-    const folderPath = path.join(__dirname, "./StatusReport");
+    const folderPath = path.join(__dirname, "../StatusReport");
     const filePath = path.join(folderPath, filenamePartialFailures);
 
-    fs.writeFileSync(filePath, table),
-      (err) => {
-        if (err) {
-          console.error("Error writing to file", err);
-        } else {
-          console.log("PartialFailure Report saved to the file");
-        }
-      };
+    fs.writeFile(filePath, table, (err) => {
+      if (err) {
+        console.error('Error writing to file', err);
+      } else {
+        console.log('PartialFailure Report saved to the file');
+      }
+    });
   }
 };
 

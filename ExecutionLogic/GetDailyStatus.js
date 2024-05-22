@@ -62,7 +62,7 @@ const GetDailyStatus = async () => {
 
     const fileName = `MonitoringReport_${formattedDate}.txt`;
 
-    const folderPath = path.join(__dirname, './StatusReport');
+    const folderPath = path.join(__dirname, '../StatusReport');
     const filePath = path.join(folderPath, fileName);
 
     // Ensures that the directory exists
