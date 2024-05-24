@@ -9,14 +9,15 @@ const system = require('../Dates.js');
 const constructStatement = (TransactionCount, TotalRepeatedTransactions, FailedTransactions, instance, PendingTransactions) => {
     return `For ${instance}
     Transaction Count: ${TransactionCount},
-    Failed Transactions: ${FailedTransactions || 'None'},
+    Failed Transactions: ${FailedTransactions},
     Pending Transactions: ${PendingTransactions || 'None'},
-    Repeated TransactionIDs: ${TotalRepeatedTransactions || 'None'}`;
+    Repeated TransactionIDs: \n\n  ${TotalRepeatedTransactions || 'None'}`;
 };
 
 
 const GetDailyStatus = async () => {
     let reports = [];
+    let PartialFailures
     for (const elem of system) {
         try {
             const Transactions = await fetchData(elem.hostname, elem.triggeredAt);
@@ -27,7 +28,7 @@ const GetDailyStatus = async () => {
             const TotalTransactions = RepeatedTransactionsForNormalFlows.concat(RepeatedTransactionsForCapGFlows)
             const FailedTransactions = await getFailedTransactions(Transactions);
             const PendingTransactions = await getProcessingTransactions(Transactions);
-            const PartialFailures = await getPartialFailures(Transactions)
+            PartialFailures = PartialFailures + "\n\n" + await getPartialFailures(Transactions, instance)
 
 
             //******** Function used to format the long list of RepeatedTransactions which includes results 
@@ -77,6 +78,18 @@ const GetDailyStatus = async () => {
             console.log('Daily Monitoring Report saved to the file');
         }
     });
+
+    const filenamePartialFailures = `Partial_Failures_${month}_${day}.txt`;
+    const filePathforPF = path.join(folderPath, filenamePartialFailures);
+
+    fs.writeFile(filePathforPF, PartialFailures, (err) => {
+        if (err) {
+            console.error('Error writing to file', err);
+        } else {
+            console.log('PartialFailure Report saved to the file');
+        }
+    });
+
 }
 
 GetDailyStatus();

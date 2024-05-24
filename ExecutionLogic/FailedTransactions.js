@@ -12,7 +12,7 @@ async function getFailedTransactions(Transactions) {
         }
     }
     const FailedTransactions = convertObjectToStringArray(FailTransactions)
-    return FailedTransactions
+    return FailedTransactions.length > 0 ? FailedTransactions : "None"
 }
 
 
@@ -26,7 +26,7 @@ async function getProcessingTransactions(Transactions) {
             PendingTransactions.push(group);
         }
     }
-    return PendingTransactions
+    return PendingTransactions.length > 0 ? PendingTransactions : "None"
 }
 
 

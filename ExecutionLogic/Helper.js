@@ -33,7 +33,8 @@ const fetchData = async (hostname, triggeredAt, transactionId) => {
 
 //*** Function used to construct a dynamic URL for API execution as the date needs to change everyday */
 const constructUrl = (hostname, triggeredAt) => {
-    return `https://${hostname}/integration/transactions?filter={"where": {"triggeredAt": {"gt": "${triggeredAt}"}}}`;
+    // return `https://${hostname}/integration/transactions?filter={"where": {"triggeredAt": {"gt": "${triggeredAt}"}}}`;
+    return `https://${hostname}/integration/transactions?filter={"where": {"triggeredAt": ${JSON.stringify(triggeredAt)}}}`;
 }
 
 
