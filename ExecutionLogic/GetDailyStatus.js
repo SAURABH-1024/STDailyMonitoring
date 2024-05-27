@@ -11,7 +11,7 @@ const constructStatement = (TransactionCount, TotalRepeatedTransactions, FailedT
     Transaction Count: ${TransactionCount},
     Failed Transactions: ${FailedTransactions},
     Pending Transactions: ${PendingTransactions || 'None'},
-    Repeated TransactionIDs: \n\n  ${TotalRepeatedTransactions || 'None'}`;
+    Repeated TransactionIDs: \n${TotalRepeatedTransactions || 'None'}`;
 };
 
 
