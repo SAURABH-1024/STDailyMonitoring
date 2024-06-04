@@ -11,7 +11,7 @@ const constructStatement = (TransactionCount, TotalRepeatedTransactions, FailedT
     Transaction Count: ${TransactionCount},
     Failed Transactions: ${FailedTransactions},
     Pending Transactions: ${PendingTransactions || 'None'},
-    Repeated TransactionIDs: \n\n  ${TotalRepeatedTransactions || 'None'}`;
+    Repeated TransactionIDs: \n${TotalRepeatedTransactions.trim() || 'None'}`;
 };
 
 
@@ -35,7 +35,7 @@ const GetDailyStatus = async () => {
             //******** from two Functions - RepeatedTransactionsForNormalFlows, RepeatedTransactionsForCapGFlows *** /
             function formatRepeatedTransactionsArray(TotalTransactions) {
                 return TotalTransactions.map(innerArray => innerArray.join('\n'))
-                    .join('\n\n');
+                    .join('\n');
             }
 
             const TotalRepeatedTransactions = formatRepeatedTransactionsArray(TotalTransactions);
@@ -55,11 +55,8 @@ const GetDailyStatus = async () => {
 
     //************Report saved to file********************//.
 
-    const now = new Date();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-
-    const formattedDate = `${month}-${day}`;
+    const endDate = system[0].triggeredAt.between[1];
+    const formattedDate = endDate.substring(5, 10);
 
     const fileName = `MonitoringReport_${formattedDate}.txt`;
 
