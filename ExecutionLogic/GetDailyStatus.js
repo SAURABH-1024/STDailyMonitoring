@@ -6,11 +6,15 @@ const fs = require('fs');
 const path = require('path');
 const system = require('../Dates.js');
 
-const constructStatement = (TransactionCount, TotalRepeatedTransactions, FailedTransactions, instance, PendingTransactions) => {
-    return `For ${instance}
+const constructStatement = (TransactionCount, TotalRepeatedTransactions, FailedTransactions, instance, PendingTransactions, formattedDate) => {
+    return `
+On ${formattedDate}
+For ${instance}
     Transaction Count: ${TransactionCount},
-    Failed Transactions: ${FailedTransactions},
-    Pending Transactions: ${PendingTransactions || 'None'},
+    Failed Transactions:
+    ${FailedTransactions},
+    Pending Transactions:
+    ${PendingTransactions},
     Repeated TransactionIDs: \n${TotalRepeatedTransactions || 'None'}`;
 };
 
@@ -40,7 +44,12 @@ const GetDailyStatus = async () => {
 
             const TotalRepeatedTransactions = formatRepeatedTransactionsArray(TotalTransactions);
 
-            const status = constructStatement(TransactionCount, TotalRepeatedTransactions, FailedTransactions, instance, PendingTransactions);
+
+            const endDate = system[0].triggeredAt.between[1];
+            //formattedDate format = Month-Day
+            const formattedDate = endDate.substring(5, 10);
+
+            const status = constructStatement(TransactionCount, TotalRepeatedTransactions, FailedTransactions, instance, PendingTransactions, formattedDate);
             reports.push(status);
 
 
@@ -54,12 +63,9 @@ const GetDailyStatus = async () => {
 
 
     //************Report saved to file********************//.
-
-    const now = new Date();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-
-    const formattedDate = `${month}-${day}`;
+    const endDate = system[0].triggeredAt.between[1];
+    const formattedDate = endDate.substring(5, 10);
+   
 
     const fileName = `MonitoringReport_${formattedDate}.txt`;
 
@@ -79,7 +85,7 @@ const GetDailyStatus = async () => {
         }
     });
 
-    const filenamePartialFailures = `Partial_Failures_${month}_${day}.txt`;
+    const filenamePartialFailures = `Partial_Failures_${formattedDate}.txt`;
     const filePathforPF = path.join(folderPath, filenamePartialFailures);
 
     fs.writeFile(filePathforPF, PartialFailures, (err) => {

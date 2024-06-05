@@ -12,7 +12,11 @@ async function getFailedTransactions(Transactions) {
         }
     }
     const FailedTransactions = convertObjectToStringArray(FailTransactions)
-    return FailedTransactions.length > 0 ? FailedTransactions : "None"
+    const failedTransaction = FailedTransactions.length > 0 ? FailedTransactions : "None"
+    if (failedTransaction === "None") {
+        return "None"
+    }
+   return failedTransaction.join('\n')
 }
 
 
@@ -26,7 +30,11 @@ async function getProcessingTransactions(Transactions) {
             PendingTransactions.push(group);
         }
     }
-    return PendingTransactions.length > 0 ? PendingTransactions : "None"
+    const pendingTransactions =  PendingTransactions.length > 0 ? PendingTransactions : "None"
+    if (pendingTransactions === "None") {
+        return "None"
+    }
+    return pendingTransactions.join('\n')
 }
 
 
