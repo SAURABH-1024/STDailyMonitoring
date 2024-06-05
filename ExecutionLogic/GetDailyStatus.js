@@ -39,7 +39,7 @@ const GetDailyStatus = async () => {
             //******** from two Functions - RepeatedTransactionsForNormalFlows, RepeatedTransactionsForCapGFlows *** /
             function formatRepeatedTransactionsArray(TotalTransactions) {
                 return TotalTransactions.map(innerArray => innerArray.join('\n'))
-                    .join('\n\n');
+                    .join('\n');
             }
 
             const TotalRepeatedTransactions = formatRepeatedTransactionsArray(TotalTransactions);
@@ -65,7 +65,6 @@ const GetDailyStatus = async () => {
     //************Report saved to file********************//.
     const endDate = system[0].triggeredAt.between[1];
     const formattedDate = endDate.substring(5, 10);
-   
 
     const fileName = `MonitoringReport_${formattedDate}.txt`;
 
